@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThreatBoard — Cyber Threat Intelligence Dashboard</title>
+  <link rel="stylesheet" href="src/css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="src/assets/favicon.svg" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header__inner">
+      <div class="header__brand">
+        <svg class="header__logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 2L4 8v8c0 7.18 5.16 13.9 12 15.47C23.84 29.9 28 23.18 28 16V8L16 2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M11 16l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="header__title">ThreatBoard</span>
+        <span class="header__badge">LIVE</span>
+      </div>
+      <nav class="header__nav">
+        <button class="nav-btn active" data-view="overview">Overview</button>
+        <button class="nav-btn" data-view="indicators">IOCs</button>
+        <button class="nav-btn" data-view="actors">Threat Actors</button>
+        <button class="nav-btn" data-view="feed">Intel Feed</button>
+      </nav>
+      <div class="header__actions">
+        <span class="status-dot"></span>
+        <span class="header__timestamp" id="lastUpdated">Updating...</span>
+        <button class="btn-icon" id="refreshBtn" title="Refresh">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 10a6 6 0 1 0 1.5-3.9" stroke-linecap="round"/>
+            <polyline points="4,6 4,10 8,10" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main" id="mainContent">
+
+    <!-- ── OVERVIEW VIEW ── -->
+    <section class="view active" id="view-overview">
+
+      <!-- KPI strip -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <p class="kpi-label">Active Threats</p>
+          <p class="kpi-value" id="kpiThreats">—</p>
+          <p class="kpi-delta negative">↑ 12% this week</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">IOCs Tracked</p>
+          <p class="kpi-value" id="kpiIocs">—</p>
+          <p class="kpi-delta positive">↓ 4 resolved</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Critical Alerts</p>
+          <p class="kpi-value kpi-critical" id="kpiCritical">—</p>
+          <p class="kpi-delta negative">↑ 3 new today</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Threat Actors</p>
+          <p class="kpi-value" id="kpiActors">—</p>
+          <p class="kpi-delta neutral">→ No change</p>
+        </div>
+      </div>
+
+      <!-- Threat severity chart + geo map -->
+      <div class="panel-row">
+        <div class="panel panel--chart">
+          <div class="panel__header">
+            <h2 class="panel__title">Threat Activity (7 days)</h2>
+            <div class="legend">
+              <span class="legend-dot critical"></span>Critical
+              <span class="legend-dot high"></span>High
+              <span class="legend-dot medium"></span>Medium
+            </div>
+          </div>
+          <div class="chart-area">
+            <canvas id="activityChart"></canvas>
+          </div>
+        </div>
+
+        <div class="panel panel--severity">
+          <div class="panel__header">
+            <h2 class="panel__title">Severity Breakdown</h2>
+          </div>
+          <div class="severity-bars" id="severityBars"></div>
+        </div>
+      </div>
+
+      <!-- Recent alerts -->
+      <div class="panel">
+        <div class="panel__header">
+          <h2 class="panel__title">Recent Alerts</h2>
+          <button class="btn-link" data-view="feed">View all →</button>
+        </div>
+        <div class="alert-table" id="alertTable"></div>
+      </div>
+
+    </section>
+
+    <!-- ── IOC VIEW ── -->
+    <section class="view" id="view-indicators">
+      <div class="panel">
+        <div class="panel__header">
+          <h2 class="panel__title">Indicators of Compromise</h2>
+          <div class="toolbar">
+            <input class="search-input" id="iocSearch" type="text" placeholder="Search IPs, hashes, domains…" />
+            <select class="filter-select" id="iocTypeFilter">
+              <option value="">All types</option>
+              <option value="IP">IP Address</option>
+              <option value="Hash">File Hash</option>
+              <option value="Domain">Domain</option>
+              <option value="URL">URL</option>
+            </select>
+          </div>
+        </div>
+        <div class="ioc-table" id="iocTable"></div>
+      </div>
+    </section>
+
+    <!-- ── THREAT ACTORS VIEW ── -->
+    <section class="view" id="view-actors">
+      <div class="actors-grid" id="actorsGrid"></div>
+    </section>
+
+    <!-- ── INTEL FEED VIEW ── -->
+    <section class="view" id="view-feed">
+      <div class="panel">
+        <div class="panel__header">
+          <h2 class="panel__title">Intelligence Feed</h2>
+          <select class="filter-select" id="feedSeverityFilter">
+            <option value="">All severities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="feed-list" id="feedList"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>ThreatBoard &copy; 2026 — Cyber Threat Intelligence Platform</span>
+    <span>Data refreshes every 60 seconds &nbsp;|&nbsp; <a href="https://github.com/anfaspulari/threatboard" target="_blank">GitHub</a></span>
+  </footer>
+
+  <script src="src/js/data.js"></script>
+  <script src="src/js/chart.js"></script>
+  <script src="src/js/app.js"></script>
+</body>
+</html>
