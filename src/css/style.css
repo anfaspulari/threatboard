@@ -445,6 +445,173 @@ canvas { display: block; width: 100% !important; }
   color: var(--text-muted);
 }
 
+/* ── Analyst Insight panel ── */
+.insight-panel {
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(90deg, rgba(88,166,255,0.05) 0%, transparent 60%);
+  margin-bottom: 24px;
+}
+.insight-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+}
+.insight-icon {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  background: var(--accent-dim);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  margin-top: 2px;
+}
+.insight-icon svg { width: 16px; height: 16px; }
+.insight-body { flex: 1; }
+.insight-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+.insight-text {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.insight-text strong { color: var(--text-primary); font-weight: 600; }
+.insight-campaign { color: var(--accent) !important; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.82em; }
+
+/* ── IOC status badge ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.status-badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status-open         { background: rgba(110,118,129,0.12); color: var(--text-secondary);  border: 1px solid rgba(110,118,129,0.25); }
+.status-investigating { background: rgba(88,166,255,0.12);  color: var(--info);            border: 1px solid rgba(88,166,255,0.25); }
+.status-escalated    { background: rgba(255,140,0,0.12);   color: var(--high);            border: 1px solid rgba(255,140,0,0.25); }
+.status-closed       { background: rgba(63,185,80,0.08);   color: var(--text-muted);      border: 1px solid rgba(63,185,80,0.15); }
+
+/* ── IOC row selection + transitions ── */
+.ioc-row { transition: background var(--transition); }
+.ioc-row td { transition: background var(--transition); }
+.ioc-row--selected td {
+  background: rgba(88,166,255,0.07) !important;
+}
+.ioc-row--selected {
+  outline: 1px solid rgba(88,166,255,0.2);
+  outline-offset: -1px;
+}
+
+/* ── IOC action buttons ── */
+.action-group {
+  display: flex;
+  gap: 5px;
+  flex-wrap: nowrap;
+}
+.action-btn {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: all var(--transition);
+  letter-spacing: 0.02em;
+}
+.action-investigate {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-color: rgba(88,166,255,0.25);
+}
+.action-investigate:hover { background: rgba(88,166,255,0.22); border-color: var(--accent); }
+.action-escalate {
+  background: rgba(255,140,0,0.10);
+  color: var(--high);
+  border-color: rgba(255,140,0,0.25);
+}
+.action-escalate:hover { background: rgba(255,140,0,0.20); border-color: var(--high); }
+.action-close {
+  background: rgba(110,118,129,0.10);
+  color: var(--text-muted);
+  border-color: rgba(110,118,129,0.2);
+}
+.action-close:hover { background: rgba(110,118,129,0.20); color: var(--text-secondary); }
+.action-reopen {
+  background: rgba(63,185,80,0.08);
+  color: var(--low);
+  border-color: rgba(63,185,80,0.2);
+}
+.action-reopen:hover { background: rgba(63,185,80,0.16); }
+
+/* ── Misc IOC table helpers ── */
+.type-label      { color: var(--info); font-size: 0.78rem; font-weight: 600; }
+.campaign-tag    { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.76rem; color: var(--accent); background: var(--accent-dim); border-radius: 4px; padding: 1px 6px; }
+.text-muted-sm   { color: var(--text-muted); font-size: 0.78rem; }
+.mono-muted      { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; color: var(--text-muted); }
+.time-cell       { color: var(--text-muted); white-space: nowrap; font-size: 0.8rem; }
+.empty-state     { text-align: center; padding: 32px; color: var(--text-muted); }
+
+/* ── ATT&CK technique tags ── */
+.actor-techniques {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+.attack-tag {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(88,166,255,0.08);
+  color: var(--info);
+  border: 1px solid rgba(88,166,255,0.2);
+  border-radius: 4px;
+  padding: 2px 7px;
+  letter-spacing: 0.03em;
+}
+
+/* ── Actor activity line ── */
+.actor-activity {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: var(--bg-base);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--border);
+}
+
+/* ── Feed meta (time + source) ── */
+.feed-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.feed-source {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1100px) {
   .panel-row { grid-template-columns: 1fr; }
