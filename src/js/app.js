@@ -204,6 +204,24 @@
     `;
   }
 
+  /* ── localStorage persistence ── */
+  const STORAGE_KEY = 'tb_ioc_statuses';
+
+  function saveStatuses() {
+    const snapshot = TB_DATA.iocs.map(i => ({ id: i.id, status: i.status }));
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot)); } catch (_) {}
+  }
+
+  function loadStatuses() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      saved.forEach(({ id, status }) => {
+        const ioc = TB_DATA.iocs.find(i => i.id === id);
+        if (ioc) ioc.status = status;
+      });
+    } catch (_) {}
+  }
+
   /* ── IOC table ── */
   let iocFilter     = { search: '', type: '', status: '' };
   let selectedIocId = null;
@@ -334,8 +352,9 @@
       if (!ioc) return;
 
       ioc.status = newStatus;
+      saveStatuses();
       updateIocRow(ioc);
-      renderInsight();   /* Insight text updates to reflect the change */
+      renderInsight();
     });
   }
 
@@ -445,6 +464,7 @@
 
   /* ── Bootstrap ── */
   document.addEventListener('DOMContentLoaded', () => {
+    loadStatuses();
     initNav();
     renderKpis();
     renderSeverityBars();
